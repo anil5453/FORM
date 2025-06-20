@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
 
-
 const doctors = [
   { name: 'Dr. Alice', phone: '+919390979128' },
-  { name: 'Dr. Bob', phone: '+919390979128' },
-  { name: 'Dr. Charlie', phone: '+919390979128' },
+  { name: 'Dr. Bob', phone: '+919390979129' },
+  { name: 'Dr. Charlie', phone: '+919390979127' },
 ];
 
 const timeSlots = [
@@ -17,7 +16,7 @@ const AppointmentForm = () => {
   const [formData, setFormData] = useState({
     patientName: '',
     patientPhone: '',
-    doctorPhone: '',
+    doctorName: '',
     appointmentDate: '',
     appointmentTime: '',
     symptoms: ''
@@ -31,29 +30,50 @@ const AppointmentForm = () => {
 
   const handleDoctorSelect = (e) => {
     const selectedDoctor = doctors.find(doc => doc.name === e.target.value);
-    setFormData({ ...formData, doctorPhone: selectedDoctor.phone });
+    setFormData({
+      ...formData,
+      doctorName: selectedDoctor.name
+    });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    const {
+      patientName,
+      patientPhone,
+      doctorName,
+      appointmentDate,
+      appointmentTime,
+      symptoms
+    } = formData;
+
+    const message = `📅 *Appointment Confirmation*
+👤 Patient: ${patientName}
+📱 Phone: ${patientPhone}
+🩺 Doctor: ${doctorName}
+🗓️ Date: ${appointmentDate}
+⏰ Time: ${appointmentTime}
+📝 Symptoms: ${symptoms}`;
+
     const payload = {
-      ...formData,
-      appointmentDate: `${formData.appointmentDate} ${formData.appointmentTime}`
+      to: patientPhone,
+      message: message,
     };
 
     try {
-      const res = await fetch('http://localhost:5000/api/book-appointment', {
+      const res = await fetch('https://whatsapp-backend.onrender.com/send-whatsapp', {
+
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       });
 
       const result = await res.json();
-      setConfirmation(result.message || 'Appointment booked successfully.');
+      setConfirmation(result.message || '✅ Appointment booked and WhatsApp sent.');
     } catch (error) {
       console.error(error);
-      setConfirmation('Error booking appointment.');
+      setConfirmation('❌ Error sending WhatsApp.');
     }
   };
 
@@ -65,7 +85,7 @@ const AppointmentForm = () => {
         <input name="patientName" onChange={handleChange} required />
 
         <label>Patient WhatsApp Number</label>
-        <input name="patientPhone" placeholder="+1234567890" onChange={handleChange} required />
+        <input name="patientPhone" placeholder="+91..." onChange={handleChange} required />
 
         <label>Select Doctor</label>
         <select onChange={handleDoctorSelect} required>
