@@ -56,6 +56,8 @@ app.post("/send-whatsapp", async (req, res) => {
   }
 });
 
+
+
 // Root route
 app.get("/", (req, res) => {
   res.send("Doctor Appointment API is running.");
