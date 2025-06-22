@@ -48,27 +48,32 @@ const AppointmentForm = () => {
     setMessage('');
 
     try {
-      const res = await fetch("https://form-backend.onrender.com/api/book-appointment", {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      });
-await fetch('https://form-cxa1.onrender.com/api/book-appointment', {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify(formData)
-});
+  const res = await fetch('https://form-cxa1.onrender.com/api/book-appointment', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(formData),
+  });
 
-      const result = await res.json();
-      setMessage(result.message || 'Appointment booked.');
+  if (!res.ok) {
+    const text = await res.text(); // in case it's not valid JSON
+    throw new Error(`Server error ${res.status}: ${text}`);
+  }
 
-    } catch (err) {
-      setMessage('❌ Server error. Try again later.');
-      console.error(err);
-    } finally {
+  const data = await res.json();
+  console.log('✅ Success:', data);
+  alert('Appointment sent via WhatsApp');
+
+}  catch (err) {
+  console.error('❌ Error:', err.message);
+  alert('Something went wrong: ' + err.message);
+} finally {
       setLoading(false);
     }
   };
+
+
+  
+
 
   return (
     <div className="form-container">
