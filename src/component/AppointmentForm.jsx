@@ -48,7 +48,7 @@ const AppointmentForm = () => {
     setMessage('');
 
     try {
-      const res = await fetch('http://localhost:5000/api/book-appointment', {
+      const res = await fetch("https://form-backend.onrender.com/api/book-appointment", {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
