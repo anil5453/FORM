@@ -1,7 +1,7 @@
 {
   "name": "form",
   "version": "0.1.0",
-  "homepage": "https://anil5453.github.io/FORM",
+  "homepage": "https://your-vercel-url.vercel.app",
   "private": true,
   "dependencies": {
     "@testing-library/dom": "^10.4.0",
