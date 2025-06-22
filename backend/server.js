@@ -47,6 +47,7 @@ app.post('/api/book-appointment', async (req, res) => {
       body: `New appointment scheduled:\n\n${messageText}`
     });
 
+    
     console.log('✅ WhatsApp Sent:', patientRes.sid, doctorRes.sid);
     res.status(200).json({ message: '✅ WhatsApp messages sent to patient and doctor.' });
 
@@ -61,5 +62,6 @@ app.post('/api/book-appointment', async (req, res) => {
   }
 });
 
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`🚀 Backend running on http://localhost:${PORT}`));
+

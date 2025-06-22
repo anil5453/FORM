@@ -53,6 +53,11 @@ const AppointmentForm = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       });
+await fetch('https://form-cxa1.onrender.com/api/book-appointment', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify(formData)
+});
 
       const result = await res.json();
       setMessage(result.message || 'Appointment booked.');
