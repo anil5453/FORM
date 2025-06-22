@@ -7,14 +7,14 @@ app.use(cors());
 app.use(express.json());
 require('dotenv').config();
 
+
 const accountSid = process.env.TWILIO_SID;
 const authToken = process.env.TWILIO_AUTH;
+const fromWhatsAppNumber = process.env.FROM_WHATSAPP || 'whatsapp:+14155238886';
 
 
 // Twilio Sandbox credentials (Don't use in production)
-// const accountSid ='AC15fd4a9ed904d4cad4163d975d04cc93';
-// const authToken = '8e242d5002f0d8799e544fefc5055638';
-   const fromWhatsAppNumber = 'whatsapp:+15737874866'; // Twilio sandbox FROM number
+ // Twilio sandbox FROM number
 
 const client = twilio(accountSid, authToken);
 
