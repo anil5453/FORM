@@ -48,11 +48,12 @@ const AppointmentForm = () => {
     setMessage('');
 
     try {
-  const res = await fetch('https://form-cxa1.onrender.com/api/book-appointment', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(formData),
-  });
+  const res = await fetch('https://form-backend.onrender.com/api/book-appointment', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify(payload),
+});
+
 
   if (!res.ok) {
     const text = await res.text(); // in case it's not valid JSON
