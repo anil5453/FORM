@@ -23,7 +23,9 @@ const AppointmentForm = () => {
     try {
      
         // Deployed Render backend URL (example)
-const res = await fetch('https://doctor-backend.onrender.com/api/book-appointment', {
+// const res = await fetch('https://doctor-backend.onrender.com/api/book-appointment', {
+  const res = await fetch('https://backend-9ifq.onrender.com/api/book-appointment', {
+
 
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
