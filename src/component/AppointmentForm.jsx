@@ -1,119 +1,74 @@
 import React, { useState } from 'react';
-// import './AppointmentForm.css'; // import the CSS file
-
-const doctors = [
-  { name: 'Dr. Alice', phone: '+919876543210' },
-  { name: 'Dr. Bob', phone: '+919876543211' },
-  { name: 'Dr. Charlie', phone: '+919876543212' },
-];
-
-const timeSlots = [
-  '09:00 AM', '10:00 AM', '11:00 AM',
-  '01:00 PM', '02:00 PM', '03:00 PM', '05:00 PM',
-];
 
 const AppointmentForm = () => {
-  const today = new Date().toISOString().split('T')[0];
-
   const [formData, setFormData] = useState({
     patientName: '',
     patientPhone: '',
+    doctorName: '',
     doctorPhone: '',
-    appointmentDate: today,
+    appointmentDate: '',
     appointmentTime: '',
-    symptoms: ''
   });
 
-  const [message, setMessage] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [status, setStatus] = useState({ success: false, error: '', loading: false });
 
-  const handleChange = e => {
+  const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleDoctorSelect = e => {
-    const doctor = doctors.find(d => d.name === e.target.value);
-    setFormData({ ...formData, doctorPhone: doctor?.phone || '' });
-  };
-
-  const handleSubmit = async e => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
-    const payload = {
-      ...formData,
-      appointmentDate: `${formData.appointmentDate} ${formData.appointmentTime}`,
-    };
-
-    setLoading(true);
-    setMessage('');
+    setStatus({ success: false, error: '', loading: true });
 
     try {
-  const res = await fetch('https://form-backend.onrender.com/api/book-appointment', {
+      // const res = await fetch('https://your-backend-url.com/api/book-appointment', {
+      //   method: 'POST',
+      //   headers: { 'Content-Type': 'application/json' },
+      //   body: JSON.stringify(formData),
+      
+const res = await fetch('http://localhost:5000/api/book-appointment', {
   method: 'POST',
   headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify(payload),
+  body: JSON.stringify(formData),
 });
 
-
-  if (!res.ok) {
-    const text = await res.text(); // in case it's not valid JSON
-    throw new Error(`Server error ${res.status}: ${text}`);
-  }
-
-  const data = await res.json();
-  console.log('✅ Success:', data);
-  alert('Appointment sent via WhatsApp');
-
-}  catch (err) {
-  console.error('❌ Error:', err.message);
-  alert('Something went wrong: ' + err.message);
-} finally {
-      setLoading(false);
+      const data = await res.json();
+      if (res.ok) {
+        setStatus({ success: true, error: '', loading: false });
+        setFormData({
+          patientName: '',
+          patientPhone: '',
+          doctorName: '',
+          doctorPhone: '',
+          appointmentDate: '',
+          appointmentTime: '',
+        });
+      } else {
+        throw new Error(data.message || 'Something went wrong');
+      }
+    } catch (err) {
+      setStatus({ success: false, error: err.message, loading: false });
     }
   };
 
-
-  
-
-
   return (
-    <div className="form-container">
-      <h2>📋 Book Appointment</h2>
-      <form className="appointment-form" onSubmit={handleSubmit}>
-        <label>👤 Patient Name</label>
-        <input name="patientName" onChange={handleChange} required />
+    <div style={{ maxWidth: '500px', margin: 'auto', padding: '1rem' }}>
+      <h2>Book Doctor Appointment</h2>
+      <form onSubmit={handleSubmit}>
+        <input type="text" name="patientName" placeholder="Patient Name" required value={formData.patientName} onChange={handleChange} />
+        <input type="tel" name="patientPhone" placeholder="Patient WhatsApp (+91...)" required value={formData.patientPhone} onChange={handleChange} />
+        <input type="text" name="doctorName" placeholder="Doctor Name" required value={formData.doctorName} onChange={handleChange} />
+        <input type="tel" name="doctorPhone" placeholder="Doctor WhatsApp (+91...)" required value={formData.doctorPhone} onChange={handleChange} />
+        <input type="date" name="appointmentDate" required value={formData.appointmentDate} onChange={handleChange} />
+        <input type="time" name="appointmentTime" required value={formData.appointmentTime} onChange={handleChange} />
 
-        <label>📱 Patient WhatsApp (+91...)</label>
-        <input name="patientPhone" onChange={handleChange} required placeholder="+91..." />
-
-        <label>👨‍⚕️ Choose Doctor</label>
-        <select onChange={handleDoctorSelect} required>
-          <option value="">-- Select --</option>
-          {doctors.map(doc => (
-            <option key={doc.phone} value={doc.name}>{doc.name}</option>
-          ))}
-        </select>
-
-        <label>📆 Date</label>
-        <input type="date" name="appointmentDate" onChange={handleChange} value={formData.appointmentDate} required />
-
-        <label>⏰ Time</label>
-        <select name="appointmentTime" onChange={handleChange} required>
-          <option value="">-- Select Time --</option>
-          {timeSlots.map(time => (
-            <option key={time} value={time}>{time}</option>
-          ))}
-        </select>
-
-        <label>💬 Symptoms</label>
-        <textarea name="symptoms" rows="3" onChange={handleChange} required />
-
-        <button type="submit" disabled={loading}>
-          {loading ? 'Sending...' : 'Book Appointment'}
+        <button type="submit" disabled={status.loading}>
+          {status.loading ? 'Booking...' : 'Book Appointment'}
         </button>
       </form>
 
-      {message && <div className="confirmation">{message}</div>}
+      {status.success && <p style={{ color: 'green' }}>✅ Appointment booked and WhatsApp messages sent!</p>}
+      {status.error && <p style={{ color: 'red' }}>❌ {status.error}</p>}
     </div>
   );
 };
