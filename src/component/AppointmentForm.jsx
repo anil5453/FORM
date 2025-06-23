@@ -21,15 +21,18 @@ const AppointmentForm = () => {
     setStatus({ success: false, error: '', loading: true });
 
     try {
-      // const res = await fetch('https://your-backend-url.com/api/book-appointment', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify(formData),
+     
+        // Deployed Render backend URL (example)
+const res = await fetch('https://doctor-backend.onrender.com/api/book-appointment', {
+
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
       
-const res = await fetch('http://localhost:5000/api/book-appointment', {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify(formData),
+// const res = await fetch('http://localhost:5000/api/book-appointment', {
+//   method: 'POST',
+//   headers: { 'Content-Type': 'application/json' },
+//   body: JSON.stringify(formData),
 });
 
       const data = await res.json();
